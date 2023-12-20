@@ -6,7 +6,7 @@ import { CommonModule } from "@angular/common";
   selector: "app-details",
   standalone: true,
   imports: [CommonModule],
-  template: ` <p>{{ housingLocationId }}</p> `,
+  template: ` <p>details work !{{ housingLocationId }}</p> `,
   styleUrls: ["./details.component.css"],
 })
 export class DetailsComponent {
