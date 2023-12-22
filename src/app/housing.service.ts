@@ -127,4 +127,9 @@ export class HousingService {
       (housingLocation) => housingLocation.id === id
     );
   }
+
+  //get data from submit form
+  submitApplication(firstName: string, lastName: string, email: string) {
+    console.log("formServices=>", firstName, lastName, email);
+  }
 }

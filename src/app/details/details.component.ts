@@ -3,11 +3,12 @@ import { ActivatedRoute } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { HousingService } from "../housing.service";
 import { HousingLocation } from "../housing-location";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-details",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   template: ` <article>
     <img [src]="housingLocation?.photo" alt="" class="listing-photo" />
     <section class="listing-description">
@@ -28,7 +29,21 @@ import { HousingLocation } from "../housing-location";
 
     <section class="listing-apply">
       <h2 class="section-heading">Apply now to live here</h2>
-      <button class="primary" type="button">Apply now</button>
+      <!-- apply form binding -->
+      <!-- [Propery Biding] (Event Binding) -->
+      <form [formGroup]="applyForm" (submit)="submitApplication()">
+        <!-- firstName -->
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" formControlName="firstName" />
+        <!-- lastName -->
+        <label for="last-name">Last Name</label>
+        <input type="text" id="last-name" formControlName="lastName" />
+        <!-- email  -->
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" />
+        <!-- submit button -->
+        <button type="submit" class="primary">Apply now</button>
+      </form>
     </section>
   </article>`,
   styleUrls: ["./details.component.css"],
@@ -38,10 +53,30 @@ export class DetailsComponent {
   housingService = inject(HousingService);
   housingLocation: HousingLocation | undefined;
 
+  applyForm = new FormGroup({
+    firstName: new FormControl(""),
+    lastName: new FormControl(""),
+    email: new FormControl(""),
+  });
+
   constructor() {
     // Get the housing location ID from the URL parameters
     const housingLocationId = Number(this.route.snapshot.params["id"]);
     this.housingLocation =
       this.housingService.getHousingLocationById(housingLocationId);
+  }
+
+  // submit application action
+  submitApplication() {
+    this.housingService.submitApplication(
+      this.applyForm.value.firstName ?? "",
+      this.applyForm.value.lastName ?? "",
+      this.applyForm.value.email ?? ""
+    );
+
+    //retive form data
+    console.log("firstName =>", this.applyForm.value.firstName);
+    console.log("lastName =>", this.applyForm.value.lastName);
+    console.log("emailName =>", this.applyForm.value.email);
   }
 }
