@@ -62,8 +62,10 @@ export class DetailsComponent {
   constructor() {
     // Get the housing location ID from the URL parameters
     const housingLocationId = Number(this.route.snapshot.params["id"]);
-    this.housingLocation =
-      this.housingService.getHousingLocationById(housingLocationId);
+
+    this.housingService
+      .getHousingLocationById(housingLocationId)
+      .then((housingLocation) => (this.housingLocation = housingLocation));
   }
 
   // submit application action

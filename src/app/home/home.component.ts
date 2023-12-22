@@ -10,13 +10,22 @@ import { HousingService } from "../housing.service";
   template: `
     <section>
       <form>
-        <input type="text" placeholder="Filer by city" />
-        <button class="primary" type="button">Search</button>
+        <!-- add # to make it a reference aka template variable-->
+        <input type="text" placeholder="Filer by city" #filter />
+        <!-- add (click) input value from #filter -->
+        <button
+          class="primary"
+          type="button"
+          (click)="filterResults(filter.value)"
+        >
+          Search
+        </button>
       </form>
     </section>
     <section class="results">
+      <!-- change src of list for loop -->
       <app-housing-location
-        *ngFor="let housingLocation of housingLocationList"
+        *ngFor="let housingLocation of filteredLocationList"
         [housingLocation]="housingLocation"
       ></app-housing-location>
     </section>
@@ -26,8 +35,31 @@ import { HousingService } from "../housing.service";
 export class HomeComponent {
   housingLocationList: HousingLocation[] = [];
   housingService = inject(HousingService);
+  filteredLocationList: HousingLocation[] = [];
 
   constructor() {
-    this.housingLocationList = this.housingService.getAllHousingLocations();
+    this.housingService
+      .getAllHousingLocations()
+      .then((housingLocationList: HousingLocation[]) => {
+        // store data in local variable
+        this.housingLocationList = housingLocationList;
+        // data use for loop = data that stored
+        this.filteredLocationList = housingLocationList;
+      });
+  }
+
+  // click button
+  filterResults(text: string) {
+    //if text is empty
+    if (!text) {
+      //  data for loop = data that stored
+      this.filteredLocationList = this.housingLocationList;
+    }
+    //if text is not empty
+    // data for loop = data that stored filtered
+    this.filteredLocationList = this.housingLocationList.filter(
+      (housingLocation) =>
+        housingLocation?.city.toLowerCase().includes(text.toLowerCase())
+    );
   }
 }
